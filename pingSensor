@@ -1,0 +1,28 @@
+#!/usr/bin/python
+import serial, os, time
+
+
+i = 0
+
+ser = serial.Serial(
+	port='/dev/ttyAMA0',
+	baudrate = 11500,
+	parity = serial.PARITY_NONE,
+	stopbits = serial.STOPBITS_ONE,
+	bytesize = serial.EIGHTBITS,
+	timeout = 1
+	)	
+
+ff = open("nmea.txt", "a")
+
+while i < 50:
+	x = ser.readline()
+#	parse = x.split(",")
+#	if (parse[0] == '$GPGGA'):
+#		print(parse[2] + " " + parse[3]+ " " + parse[4] + " " + parse[5])
+	i = i+1
+	print(x)
+#	ff.write(x)
+#	ff.write("\n")
+
+ff.close()
