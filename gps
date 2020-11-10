@@ -1,8 +1,18 @@
 #!/usr/bin/python
 import serial, os, time
 
+def listToString(nmeaParsed):
+	string = "".join(nmeaParsed)
+	return string
 
 i = 0
+northSouth = []
+eastWest = []
+utcTime = []
+latitude = []
+longitude = []
+compare = []
+str1 = ''
 
 ser = serial.Serial(
 	port='/dev/ttyAMA0',
@@ -13,16 +23,17 @@ ser = serial.Serial(
 	timeout = 1
 	)	
 
-ff = open("nmea.txt", "a")
-
-while i < 50:
+#ff = open("nmea.txt", "a")
+time.sleep(1)
+for i in range(100):
 	x = ser.readline()
-#	parse = x.split(",")
-#	if (parse[0] == '$GPGGA'):
-#		print(parse[2] + " " + parse[3]+ " " + parse[4] + " " + parse[5])
-	i = i+1
-	print(x)
-#	ff.write(x)
-#	ff.write("\n")
-
-ff.close()
+	parse = x.split(",")
+#	print(x)
+	if (parse[0] == '$GPRMC'):
+		latitude = listToString(parse[3])
+#		print(parse[3])
+		print(latitude[1])
+#print(x)
+#print(utcTime)
+#print(utcTime[5])
+#ff.close()
