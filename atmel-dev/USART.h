@@ -9,9 +9,9 @@
 #ifndef USART_H_
 #define USART_H_
 
-#define F_CPU					8000000 //MCU operates at 8MHz
+#define F_CPU				8000000 //MCU operates at 8MHz
 #define USART_BAUDRATE			9600
-#define UBRR0_VALUE				(((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+#define UBRR0_VALUE			(((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
 unsigned char USART_Receive(void);
 void USART_Init(void);

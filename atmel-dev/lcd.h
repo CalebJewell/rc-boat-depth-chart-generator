@@ -5,9 +5,9 @@
 #define DataDirRegisters		DDRA
 #define DataDirControl			DDRD
 #define ControlRegisters		PORTD
-#define en						PORTD5
-#define rs						PORTD6
-#define rw						PORTD7
+#define en				PORTD5
+#define rs				PORTD6
+#define rw				PORTD7
 
 void print_data(unsigned char *,unsigned char *);
 void Commands(unsigned char);
