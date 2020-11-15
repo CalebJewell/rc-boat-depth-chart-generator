@@ -1,3 +1,5 @@
+#define F_CPU				8000000 //MCU operates at 8MHz
+
 #include "lcd.h"
 #include <avr/io.h>
 #include <util/delay.h>
@@ -13,7 +15,7 @@ void print_data(unsigned char *latitude, unsigned char *longitude){
 	sendString("Long:");
 	_delay_ms(2);
 	sendString(longitude);
-	_delay_ms(1200);
+	_delay_ms(2);
 	Commands(2);
 	_delay_ms(16);
 

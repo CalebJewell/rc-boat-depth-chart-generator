@@ -1,3 +1,5 @@
+#define F_CPU				8000000 //MCU operates at 8MHz
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include "USART.h"
@@ -17,7 +19,7 @@ void get_position(){
 
 	for (int i=0;i<7;i++) {
 	
-		ch = USART_Receive();	
+		ch = GPS_Receive();	
 		if (ch == gpgga[i]) {
 			test_buffer[count] = ch;
 			count++;
@@ -28,13 +30,13 @@ void get_position(){
 		}
 	}
 	if (count == 7){
-	
-		while(USART_Receive()!= ',');
+		
+		while(GPS_Receive()!= ',');
 		comma = 0;
 		
-		//parse and store latitide data
+		//parse and store latitude data
 		while(comma!=2) {
-			ch = USART_Receive();
+			ch = GPS_Receive();
 			if(ch != ',' && comma < 2) {
 				latitude[lat_post] = ch;
 				lat_post++;
@@ -46,7 +48,7 @@ void get_position(){
 		
 		//parse and store longitude data
 		while (comma >= 2 && comma <4){
-			ch = USART_Receive();
+			ch = GPS_Receive();
 			if(ch != ',' && comma < 4) {
 				longitude[long_post] = ch;
 				long_post++;
@@ -62,7 +64,6 @@ void get_position(){
 		lat_post = 0;
 		long_post = 0;
 	}
-	
 	print_data(latitude,longitude);
 
 }

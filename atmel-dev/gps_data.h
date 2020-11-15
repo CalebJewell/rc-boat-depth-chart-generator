@@ -3,5 +3,4 @@
 
 void get_position();
 
-
 #endif /* GPS_DATA_H_ */
