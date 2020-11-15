@@ -8,8 +8,8 @@
 
 /* Port controls  (Platform dependent) */
 #define SS		(1<<DDB4)
-#define MOSI	(1<<DDB5)
-#define MISO	(1<<DDB6)
+#define MOSI		(1<<DDB5)
+#define MISO		(1<<DDB6)
 #define SCK		(1<<DDB7)
 #define CS_LOW()	PORTB &= ~SS		/* CS=low */
 #define	CS_HIGH()	PORTB |= SS			/* CS=high */

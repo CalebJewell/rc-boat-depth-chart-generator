@@ -1,8 +1,8 @@
 #ifndef LCD_H_
 #define LCD_H_
 
-#define DataRegisters			PORTA
-#define DataDirRegisters		DDRA
+#define DataRegisters			PORTC
+#define DataDirRegisters		DDRC
 #define DataDirControl			DDRD
 #define ControlRegisters		PORTD
 #define en				PORTD5

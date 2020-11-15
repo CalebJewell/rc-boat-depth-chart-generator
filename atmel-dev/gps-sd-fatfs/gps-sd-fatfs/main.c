@@ -8,24 +8,28 @@
    IDE: Atmel Studio 7 
 */
 
+#define F_CPU				8000000 //MCU operates at 8MHz
+
 /* LIBRARIES NEEDED */
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-//#include "lcd.h"
+#include "lcd.h"
 #include "USART.h"
 #include "gps_data.h"
+
+#define F_CPU			8000000 //MCU operates at 8MHz
 
 int main(void) {
 
 	/* Set data direction registers for what I need */
-//	DataDirRegisters = 0xFF; //first two registers as outputs
-//	DataDirControl = 0xE0; //pd5,pd6,pd7 as outputs 
-//	ControlRegisters = 0; //setting control to low
-//	DDRB = 0b0000011;
+	DataDirRegisters = 0xFF; //first two registers as outputs
+	DataDirControl = 0xE0; //pd5,pd6,pd7 as outputs 
+	ControlRegisters = 0; //setting control to low
+	DDRA = 0b0000011;
 
 	/* Send initialization commands to setup LCD */
-//	init_lcd();
+	init_lcd();
 //	_delay_ms(100);
 
 	/* Send initialization commands to setup USART communication */
@@ -34,7 +38,11 @@ int main(void) {
 //	cli(); 
 	fat_init();
 	while(1){
+		PORTA = 0x01;
 		get_position();
+		_delay_ms(1000);
+		PORTA = 0;
+		_delay_ms(1000);
 	}
 	return 0;
 }
