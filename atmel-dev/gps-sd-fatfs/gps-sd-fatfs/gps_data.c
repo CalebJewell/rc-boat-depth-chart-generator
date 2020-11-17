@@ -4,10 +4,12 @@
 #include <util/delay.h>
 #include <string.h>
 #include <util/delay.h>
+#include <stdbool.h>
 #include "ff.h"
 #include "diskio.h"
 #include "USART.h"
 #include "lcd.h"
+#include <ctype.h>
 
 FIL file;                                               /* Opened file object */
 FATFS fatfs;                                            /* File system object */
@@ -18,8 +20,37 @@ UINT bytesRead;                                         /* Bytes read object  */
 UINT read;                                              /* Read bytes object  */
 
 int result=1;
-//char buff[] = "hellooooooo";
 int buff_stat;
+
+int check_if_fix(){
+	unsigned char ch;
+	int comma = 0;
+	int count = 0;
+	unsigned char *check = "GPGGA";
+	unsigned char test_buffer[6];
+	int flag =0;
+	
+	while(USART_Receive() != '$');
+		while(1){
+			ch = USART_Receive();
+			if(ch == ','){
+				comma++;
+			}
+			if(comma == 5){
+				comma = 0;
+				ch = USART_Receive();
+				if(ch == '1'){
+					flag = 1;
+					return flag;
+				}
+				else{
+					flag = 0;
+					return flag;
+				}
+			}
+		}
+		return 0;
+}
 
 void fat_init(void){
 	errCode = -1;
@@ -62,8 +93,6 @@ void get_position()
 	unsigned char test_buffer[7];
 	test_buffer[6] = '\0';
 	int count = 0;
-	
-	unsigned char ct[2];
 
 	for (int i=0;i<7;i++) {
 	
@@ -120,22 +149,33 @@ void get_position()
 		long_post = 0;
 		write_position = 0;
 		
-		PING_Transmit(send);
-		ct[0] = PING_Receive();
-		ct[1] = '\0';
-		_delay_ms(1500);	
-		
-		errCode = f_opendir(&dir, "/");
-		errCode = f_open(&file, "/data.txt", FA_OPEN_ALWAYS | FA_WRITE);
-		f_lseek(&file, f_size(&file)); // f_size(&file)
-		errCode = f_write(&file, latitude, 11, &bytesRead);
-		errCode = f_write(&file, longitude, 12, &bytesRead);
-		errCode = f_write(&file, ct, 2, &bytesRead);
-		errCode = f_close(&file);
+		if(isdigit(latitude[0])){
+			
+			PING_Transmit(send);
+			depth[0] = PING_Receive();
+			depth[1] = '\0';
+			
+			_delay_ms(1500);
+			
+			//_delay_ms(10);
+			errCode = f_opendir(&dir, "/");
+			//_delay_ms(10);
+			errCode = f_open(&file, "/data.txt", FA_OPEN_ALWAYS | FA_WRITE);
+			//_delay_ms(10);
+			f_lseek(&file, f_size(&file)); // f_size(&file)
+			//_delay_ms(10);
+			errCode = f_write(&file, latitude, 11, &bytesRead);
+			//_delay_ms(10);
+			errCode = f_write(&file, longitude, 12, &bytesRead);
+			//_delay_ms(10);
+			errCode = f_write(&file, depth, 2, &bytesRead);
+			//_delay_ms(10);
+			errCode = f_close(&file);
+			_delay_ms(10);
+		}
 		
 	}
-	
-
+	else return;
 	
 //	print_data(latitude,longitude);
 	

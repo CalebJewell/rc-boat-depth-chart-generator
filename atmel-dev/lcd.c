@@ -1,5 +1,4 @@
 #define F_CPU				8000000 //MCU operates at 8MHz
-
 #include "lcd.h"
 #include <avr/io.h>
 #include <util/delay.h>
@@ -22,7 +21,7 @@ void print_data(unsigned char *latitude, unsigned char *longitude){
 }
 
 void init_lcd(void){
-	char cmds[5] = {0x38, 0x0E, 1, 2, 0x14};
+	char cmds[5] = {0x38, 0x0F, 0x14, 1, 2};
 	for (int i=0;i<5;i++){
 		Commands(cmds[i]);
 		_delay_ms(2);

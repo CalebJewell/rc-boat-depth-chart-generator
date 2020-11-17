@@ -1,11 +1,3 @@
-/*
- * USART.h
- *
- * Created: 11/13/2020 4:47:44 PM
- *  Author: jewel
- */ 
-
-
 #ifndef USART_H_
 #define USART_H_
 

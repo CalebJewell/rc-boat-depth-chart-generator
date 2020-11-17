@@ -25,21 +25,23 @@ int main(void) {
 	DataDirControl = 0xE0; //pd5,pd6,pd7 as outputs 
 	ControlRegisters = 0; //setting control to low
 	DDRA = 0b0000011;
-
+	
+	unsigned int start = 0x41;
 	/* Send initialization commands to setup LCD */
 	//init_lcd();
 //	_delay_ms(100);
 
 	/* Send initialization commands to setup USART communication */
 	USART_Init();
-	unsigned int u = 0x42;
-	//fat_init();
+	
+	//PING_Transmit(start);
+	//unsigned char dummy = PING_Receive();
+
 	//PING_Transmit(u);
 	while(1){
 		fat_init();
 		PORTA = 0x01;
-		get_position();
-		PORTA = 0;
+		get_position();	
 	}
 	return 0;
 }
