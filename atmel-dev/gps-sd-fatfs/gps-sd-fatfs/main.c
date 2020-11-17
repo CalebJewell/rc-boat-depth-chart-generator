@@ -18,8 +18,6 @@
 #include "USART.h"
 #include "gps_data.h"
 
-#define F_CPU			8000000 //MCU operates at 8MHz
-
 int main(void) {
 
 	/* Set data direction registers for what I need */
@@ -29,20 +27,19 @@ int main(void) {
 	DDRA = 0b0000011;
 
 	/* Send initialization commands to setup LCD */
-	init_lcd();
+	//init_lcd();
 //	_delay_ms(100);
 
 	/* Send initialization commands to setup USART communication */
 	USART_Init();
-
-//	cli(); 
-	fat_init();
+	unsigned int u = 0x42;
+	//fat_init();
+	//PING_Transmit(u);
 	while(1){
+		fat_init();
 		PORTA = 0x01;
 		get_position();
-		_delay_ms(1000);
 		PORTA = 0;
-		_delay_ms(1000);
 	}
 	return 0;
 }

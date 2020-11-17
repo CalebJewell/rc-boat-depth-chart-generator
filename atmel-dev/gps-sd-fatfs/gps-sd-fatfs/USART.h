@@ -15,6 +15,8 @@
 
 unsigned char USART_Receive(void);
 void USART_Init(void);
-void USART_Transmit(unsigned char data);
+void USART_Transmit(unsigned char);
+void PING_Transmit(unsigned char);
+unsigned char PING_Receive();
 
 #endif /* USART_H_ */
