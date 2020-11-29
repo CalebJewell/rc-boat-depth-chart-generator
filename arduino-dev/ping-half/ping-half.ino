@@ -4,6 +4,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include <stdlib.h>
 // Arduino library to grab Ping Sensor depth
 #include "ping1d.h"
 
@@ -18,80 +19,51 @@ static Ping1D ping { Serial1 };
 void USART_Init( void );
 unsigned char USART_Receive( void );
 void USART_Transmit( unsigned char );
+void sendData( int );
 
 void setup() {
-  // LED to debug the receive/transmit of a byte with other AVR
+  // LEDs to debug the receive/transmit of a byte with other AVR
   DDRB |= 0x03;
   PORTB = 0x00;
 
   // Arduino function to set UART1 to 9600 baud
   Serial1.begin(9600);
-
+  
+  //Serial.begin(9600);
   USART_Init();
   while (!ping.initialize()) {
     PORTB |= 0x01;
   }
-  
   PORTB &= ~(0x01);
 }
 
 void loop()
 {
-  // Variable to store depth in meters
-  int depth_m;
-  // 
+  int i;
+  char distStr[10];
+
+  PORTB |= 0x02;
   unsigned char go_ahead = USART_Receive();
-  PORTB |= 0x01;
+  PORTB &= ~(0x02);
 
   if (ping.update()) {
-    depth_m = ping.distance() / 1000;
-
-    switch (depth_m) {
-      case 0:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x30);
-        break;
-      case 1:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x31);
-        break;
-      case 2:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x32);
-        break;
-      case 3:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x33);
-        break;
-      case 4:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x34);
-        break;
-      case 5:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x35);
-        break;
-      case 6:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x36);
-        break;
-      case 7:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x37);
-        break;
-      case 8:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x38);
-        break;
-      case 9:
-        //USART_Transmit(0x30);
-        USART_Transmit(0x39);
-        break;
-      default:
-        USART_Transmit(0x30);
-        //USART_Transmit(0x2D);
-        break;
+    sprintf(distStr, "%d", ping.distance());
+    
+    for (i = 0; distStr[i] != '\0'; i++) {
+      PORTB |= 0x01;
+      sendData((int)distStr[i]);
+      PORTB &= ~(0x01);
     }
+    
+    // Send "stop-byte" --> '*'
+    PORTB |= 0x01;
+    USART_Transmit(0x2A);
+    PORTB &= ~(0x01); 
+    
+    
+//    Serial.println("*");
+//    Serial.println(ping.distance());
+//    Serial.println();
   }
 }
 
@@ -107,7 +79,7 @@ void USART_Init()
 unsigned char USART_Receive()
 {
   while (!(UCSR0A & (1 << RXC0))) {
-    PORTB = 0x00;
+    PORTB |= 0x02;
   }
 
   return UDR0;
@@ -115,27 +87,57 @@ unsigned char USART_Receive()
 
 void USART_Transmit( unsigned char data )
 {
-  while (!(UCSR0A & (1 << UDRE0)));
+  while (!(UCSR0A & (1 << UDRE0))) {
+    PORTB |= 0x01;
+  }
   UDR0 = data;
 }
 
-//void setup(){
-//  //int depth_mm;
-//
-//  // put your setup code here, to run once:
-//  Serial1.begin(9600);
-//  Serial.begin(9600);
-//  ping.initialize();
-//  SD.begin();
-//  pinMode(15, OUTPUT);
-//}
-//
-//void loop(){
-//  if (ping.update()) {
-//      //depth_mm = ping.distance();
-//      //Serial.write(ping.distance());
-//      sensorData = SD.open("testFile.txt", FILE_WRITE);
-//      sensorData.println(ping.distance()/305);
-//      sensorData.close();
-//  }
-//}
+void sendData( int d ) {
+  switch (d) {
+    case 48:
+      //Serial.print(0x30);
+      USART_Transmit(0x30);
+      break;
+    case 49:
+      //Serial.print(0x31);
+      USART_Transmit(0x31);
+      break;
+    case 50:
+      //Serial.print(0x32);
+      USART_Transmit(0x32);
+      break;
+    case 51:
+      //Serial.print(0x33);
+      USART_Transmit(0x33);
+      break;
+    case 52:
+      //Serial.print(0x34);
+      USART_Transmit(0x34);
+      break;
+    case 53:
+      //Serial.print(0x35);
+      USART_Transmit(0x35);
+      break;
+    case 54:
+      //Serial.print(0x36);
+      USART_Transmit(0x36);
+      break;
+    case 55:
+      //Serial.print(0x37);
+      USART_Transmit(0x37);
+      break;
+    case 56:
+      //Serial.print(0x38);
+      USART_Transmit(0x38);
+      break;
+    case 57:
+      //Serial.print(0x39);
+      USART_Transmit(0x39);
+      break;
+    default:
+      //Serial.print(0x21);
+      USART_Transmit(0x21);
+      break;
+  }
+}
