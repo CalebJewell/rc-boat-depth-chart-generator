@@ -25,9 +25,9 @@ int buff_stat;
 int check_if_fix(){
 	unsigned char ch;
 	int comma = 0;
-	int count = 0;
-	unsigned char *check = "GPGGA";
-	unsigned char test_buffer[6];
+	//int count = 0;
+	//unsigned char *check = "GPGGA";
+	//unsigned char test_buffer[6];
 	int flag =0;
 	
 	while(USART_Receive() != '$');
@@ -67,13 +67,21 @@ void fat_init(void){
 	}
 }
 
-void sd_write(unsigned char *latitude, unsigned char *longitude){
+void sd_write(unsigned char *latitude, unsigned char *longitude, unsigned char *depth){
 	
+		//_delay_ms(10);
 		errCode = f_opendir(&dir, "/");
+		//_delay_ms(10);
 		errCode = f_open(&file, "/data.txt", FA_OPEN_ALWAYS | FA_WRITE);
+		//_delay_ms(10);
 		f_lseek(&file, f_size(&file)); // f_size(&file)
-		errCode = f_write(&file, latitude, 15, &bytesRead);
-		errCode = f_write(&file, longitude, 15, &bytesRead);
+		//_delay_ms(10);
+		errCode = f_write(&file, latitude, 11, &bytesRead);
+		//_delay_ms(10);
+		errCode = f_write(&file, longitude, 12, &bytesRead);
+		//_delay_ms(10);
+		errCode = f_write(&file, depth, 2, &bytesRead);
+		//_delay_ms(10);
 		errCode = f_close(&file);
 }
 
@@ -81,11 +89,10 @@ void get_position()
 {
 	unsigned char latitude[11];
 	unsigned char longitude[12];
-	unsigned char position[30];
-	unsigned char depth[2];
-	unsigned int send = 0x42;
+	//unsigned char position[30];
+	unsigned char depth[6];
 	int comma = 0;
-	int write_position = 0;
+	//int write_position = 0;
 	uint8_t lat_post = 0, long_post = 0;
 	
 	unsigned char ch;
@@ -93,6 +100,8 @@ void get_position()
 	unsigned char test_buffer[7];
 	test_buffer[6] = '\0';
 	int count = 0;
+	
+	unsigned char chr;
 
 	for (int i=0;i<7;i++) {
 	
@@ -125,7 +134,7 @@ void get_position()
 			}
 		}
 		
-		position[write_position] = ' ';
+		//position[write_position] = ' ';
 		
 		//parse and store longitude data
 		while (comma >= 2 && comma <4){
@@ -147,36 +156,40 @@ void get_position()
 		//position[write_position] ='\0';
 		lat_post = 0;
 		long_post = 0;
-		write_position = 0;
+		//write_position = 0;
 		
 		if(isdigit(latitude[0])){
 			
-			PING_Transmit(send);
-			depth[0] = PING_Receive();
-			depth[1] = '\0';
+			PING_Transmit(0x42);
+			count = 0;
+			while(1){
+				chr = PING_Receive();
+				depth[count] = chr;
+				count++;
+				if(chr == '!'){
+					depth[count - 1] = '\0';
+					break;
+				}
+			}
 			
+			PORTA = PORTA0;
 			_delay_ms(1500);
-			
-			//_delay_ms(10);
 			errCode = f_opendir(&dir, "/");
-			//_delay_ms(10);
-			errCode = f_open(&file, "/data.txt", FA_OPEN_ALWAYS | FA_WRITE);
-			//_delay_ms(10);
-			f_lseek(&file, f_size(&file)); // f_size(&file)
-			//_delay_ms(10);
-			errCode = f_write(&file, latitude, 11, &bytesRead);
-			//_delay_ms(10);
-			errCode = f_write(&file, longitude, 12, &bytesRead);
-			//_delay_ms(10);
-			errCode = f_write(&file, depth, 2, &bytesRead);
-			//_delay_ms(10);
-			errCode = f_close(&file);
 			_delay_ms(10);
+			errCode = f_open(&file, "/data.txt", FA_OPEN_ALWAYS | FA_WRITE);
+			_delay_ms(10);
+			f_lseek(&file, f_size(&file)); // f_size(&file)
+			_delay_ms(10);
+			errCode = f_write(&file, latitude, 11, &bytesRead);
+			_delay_ms(10);
+			errCode = f_write(&file, longitude, 12, &bytesRead);
+			_delay_ms(10);
+			errCode = f_write(&file, depth, 6, &bytesRead);
+			_delay_ms(10);
+			errCode = f_close(&file);
+			PORTA = 0;
 		}
 		
 	}
 	else return;
-	
-//	print_data(latitude,longitude);
-	
 }

@@ -21,7 +21,7 @@ void USART_Init(void){
 void PING_Transmit(unsigned char data) {
 	/* Wait for empty transmit buffer */
 	while (!(UCSR1A & (1<<UDRE1))){
-		PORTA = 0x03;
+		//PORTA = 0x03;
 	}
 	/* Put data into buffer, sends the data */
 	UDR1 = data;

@@ -26,18 +26,13 @@ int main(void) {
 	ControlRegisters = 0; //setting control to low
 	DDRA = 0b0000011;
 	
-	unsigned int start = 0x41;
 	/* Send initialization commands to setup LCD */
-	//init_lcd();
-//	_delay_ms(100);
+	init_lcd();
+	_delay_ms(100);
 
 	/* Send initialization commands to setup USART communication */
 	USART_Init();
 	
-	//PING_Transmit(start);
-	//unsigned char dummy = PING_Receive();
-
-	//PING_Transmit(u);
 	while(1){
 		fat_init();
 		PORTA = 0x01;
