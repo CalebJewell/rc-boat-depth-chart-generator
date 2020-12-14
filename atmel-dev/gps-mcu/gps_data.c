@@ -74,9 +74,7 @@ void get_position(){
 			ch = USART_Receive();
 			if(ch != ',' && comma < 2) {
 				latitude[lat_post] = ch;
-				//position[write_position] = ch;
 				lat_post++;
-				//write_position++;
 			}
 			if (ch == ',' && comma != 2){
 				comma++;
