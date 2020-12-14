@@ -86,8 +86,6 @@ void get_position(){
 			ch = USART_Receive();
 			if(ch != ',' && comma < 4) {
 				longitude[long_post] = ch;
-				//position[write_position] = ch;
-				//write_position++;
 				long_post++;
 			}
 			if (ch == ',' && comma != 4){
