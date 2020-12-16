@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+# Open data sensor file and file for formatted data
+try:
+	sensorData = open('TEST.TXT', 'r+')
+except:
+	print("Error: Can not open sensor data file")
+# Create output file if it doesn't exist
+try:
+	qgisData = open('output.txt', 'w')
+except: 
+	print("Error: Can not open file for formatted data")	
+
+# Seperate latitude, longitude, and depth with commas
+# Convert coordinates from 'Degree Minute Decimal' DMM to 'Degree Decimal' (DD) for QGIS
+# Add negative coordinates based on hemisphere
+for dmm in sensorData:
+	# Check length of each line of data and proper positioning of hemisphere data
+	if (len(dmm) == 30):
+		if (((dmm[9] == 'N') or (dmm[9] == 'S')) and (dmm[21] == 'W') or (dmm[21] == 'E')):
+			# Grab hemisphere of each GPS coordinate and append negative signs appropiately
+			# (N, W) = (+, -)
+			# (S, W) = (-, -)
+			# (N, E) = (+, +)
+			# (S, E) = (-, +)
+			hem = [dmm[9], dmm[21]]
+			if ((hem[0] == 'N') and (hem[1] == 'W')): 
+				qgisData.write(str(round(float(dmm[:2]) + float(dmm[2:9])/60.0, 6)) + ',' + '-' + str(round(float(dmm[11:14]) + float(dmm[14:21])/60.0, 6)) + ',' + str(dmm[23:]))
+			if ((hem[0] == 'S') and (hem[1] == 'W')):
+				qgisData.write('-' + str(round(float(dmm[:2]) + float(dmm[2:9])/60.0, 6)) + ',' + '-' + str(round(float(dmm[11:14]) + float(dmm[14:21])/60.0, 6)) + ',' + str(dmm[23:]))
+			if ((hem[0] == 'N') and (hem[1] == 'E')):
+				qgisData.write(str(round(float(dmm[:2]) + float(dmm[2:9])/60.0, 6)) + ',' + str(round(float(dmm[11:14]) + float(dmm[14:21])/60.0, 6)) + ',' + str(dmm[23:]))
+			if ((hem[0] == 'S') and (hem[1] == 'E')):
+				qgisData.write('-' + str(round(float(dmm[:2]) + float(dmm[2:9])/60.0, 6)) + ',' + str(round(float(dmm[11:14]) + float(dmm[14:21])/60.0, 6)) + ',' + str(dmm[23:]))
+
+# Close sensor data file and output file
+qgisData.close()
+sensorData.close()
+
+
+
+
+
