@@ -4,15 +4,13 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-void print_data(unsigned char *latitude, unsigned char *longitude, unsigned char *depth){
+void print_data(unsigned char *latitude, unsigned char *longitude){
 	sendString("Lat:");
 	sendString(latitude);
 	sendString("  ");
 	sendString("Long:");
 	sendString(longitude);
-	sendString("        ");
-	sendString("Depth:");
-	sendString(depth);
+	_delay_ms(2);
 	Commands(2);
 	_delay_ms(16);
 

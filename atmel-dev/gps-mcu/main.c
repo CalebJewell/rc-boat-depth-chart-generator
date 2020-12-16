@@ -32,7 +32,7 @@ int main(void) {
 	
 	/* Send initialization commands to setup LCD */
 	init_lcd();
-	_delay_ms(16);
+	//_delay_ms(100);
 
 	/* Send initialization commands to setup USART communication */
 	USART_Init();

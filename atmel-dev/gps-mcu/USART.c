@@ -1,3 +1,4 @@
+// Authored by: Caleb Jewell & John Bowen 
 #include <avr/io.h>
 #include "USART.h"
 

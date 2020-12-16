@@ -9,7 +9,7 @@
 #define rs				PORTD6
 #define rw				PORTD7
 
-void print_data(unsigned char *,unsigned char *,unsigned char *);
+void print_data(unsigned char *,unsigned char *);
 void Commands(unsigned char);
 void sendCharacter(unsigned char);
 void init_lcd(void);

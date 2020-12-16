@@ -131,8 +131,18 @@ void get_position(){
 				}
 			}
 			
-			print_data(latitude,longitude,depth);
-			_delay_ms(1000);
+			print_data(latitude,longitude);
+			_delay_ms(1500);
+			Commands(1);
+			_delay_ms(16);
+			Commands(2);
+			_delay_ms(16);
+			sendString("Depth:");
+			sendString(depth);
+			sendString("mm");
+			_delay_ms(500);
+			Commands(2);
+			_delay_ms(16);
 			PORTA = 0;
 		}
 		
